@@ -8,6 +8,15 @@ router.get('/', (_req, res) => {
   res.send(patientService.getWithoutSsnEntries());
 });
 
+router.get('/:id', (req, res) => {
+  const result = patientService.findPatient(req.params.id);
+      if (result) {
+        res.json(result);
+      } else {
+        res.status(404).end(); 
+      }
+});
+
 router.post('/', (req, res) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

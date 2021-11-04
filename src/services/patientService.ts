@@ -8,8 +8,8 @@ const getEntries = (): Array<PatientEntry> => {
 };
 
 const getWithoutSsnEntries = (): WithoutSsnPatientEntry [] => {
-  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id, name, dateOfBirth, gender, occupation,
+  return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
+    id, name, dateOfBirth, gender, occupation, entries
   }));
 };
 
@@ -23,8 +23,15 @@ const addEntry = ( entry: NewPatientEntry ): PatientEntry => {
   return newPatientEntry;
 };
 
+const findPatient = (id: string): PatientEntry | undefined => {
+  const result = patients.find(p => p.id === id);
+  console.log('patientresult: ', result);
+  return result;
+};
+
 export default {
   getEntries,
   getWithoutSsnEntries,
-  addEntry
+  addEntry,
+  findPatient
 };
