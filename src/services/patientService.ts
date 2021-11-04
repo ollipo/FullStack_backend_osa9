@@ -25,7 +25,6 @@ const addEntry = ( entry: NewPatientEntry ): PatientEntry => {
 
 const findPatient = (id: string): PatientEntry | undefined => {
   const result = patients.find(p => p.id === id);
-  console.log('patientresult: ', result);
   return result;
 };
 
