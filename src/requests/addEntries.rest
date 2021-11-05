@@ -1,0 +1,14 @@
+POST http://localhost:3003/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "id": "b4f4eca1-2222-4b13-9a18-4a5535c3c8da",
+    "date": "2019-10-20",
+    "specialist": "MD House",
+    "type": "Hospital",
+    "description": "Yearly control visit. Cholesterol levels back to normal.",
+    "discharge": {
+        "date": "2020-01-02",
+        "criteria": "not ill"    
+    }
+}
