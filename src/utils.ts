@@ -1,4 +1,5 @@
-import { Discharge, Entry, Gender, HealthCheckEntry, HealthCheckRating, HospitalEntry, NewPatientEntry, OccupationalHealthcareEntry } from './types';
+//import diagnoseEntries from '../data/diagnoses';
+import { DiagnoseEntry, Discharge, Entry, Gender, HealthCheckEntry, HealthCheckRating, HospitalEntry, NewPatientEntry, OccupationalHealthcareEntry } from './types';
 
 const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
@@ -20,7 +21,7 @@ const parseDateOfBirth = (dateOfBirth: unknown): string => {
 
 const parseSsn = (ssn: unknown): string => {
     if (!ssn || !isString(ssn)) {
-      throw new Error('Incorrect or missing comment');
+      throw new Error('Incorrect or missing ssn');
     }
     return ssn;
 };
@@ -42,7 +43,6 @@ const isDischarge = (param: any): param is Discharge => {
 };
 
 const parseDischarge = (discharge: unknown): Discharge => {
-  console.log('discharge');
   if (!discharge || !isDischarge(discharge)) {
     throw new Error('Incorrect or missing comment');
   }
@@ -62,17 +62,20 @@ const isGender = (param: any): param is Gender => {
     return gender;
   };
 
-  /* const isDiagnosisCodes = (param: any): param is DiagnoseEntry => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return Object.values(DiagnoseEntry).includes(param);
-  }; */
+  const isDiagnosisCodes = (param: any): param is Array<DiagnoseEntry['code']> => {
+    const result = isString(param[0]);
+      if (!result) {
+        throw new Error('Incorrect diagnosisCodes dfg');
+      }
+    return result;
+  };
 
-  /* const parseDiagnosisCodes = (diagnosisCodes: unknown): Array<DiagnoseEntry> => {
-    if (!diagnosisCodes) {
-        throw new Error('Incorrect or missing gender: ' + diagnosisCodes);
+  const parseDiagnosisCodes = (diagnosisCodes: unknown): Array<DiagnoseEntry['code']>=> {
+    if (!isDiagnosisCodes(diagnosisCodes)) {
+        throw new Error('Incorrect diagnoseCodes: ' + diagnosisCodes);
     }
     return diagnosisCodes;
-  }; */
+  };
 
   const isHealthCheckRating = (param: any): param is HealthCheckRating => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -84,8 +87,8 @@ const isGender = (param: any): param is Gender => {
   };
 
   const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-    if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
-        throw new Error('Incorrect or missing gender: ' + healthCheckRating);
+    if (!isHealthCheckRating(healthCheckRating)) {
+        throw new Error('Incorrect HealthCheckRating: ' + healthCheckRating);
     }
     return healthCheckRating;
   };
@@ -126,19 +129,6 @@ const toNewPatientEntry = ({ name, dateOfBirth, ssn, gender, occupation } : Fiel
   return newEntry;
 };
 
-/* type BaseEntryFields = { description : unknown, date: unknown, specialist: unknown, diagnosisCodes: unknown };
-
-export const toBaseEntries = ({ description, date, specialist, diagnosisCodes } : BaseEntryFields): NewBaseEntryFields => {
-  const newBaseEntryFields: NewBaseEntryFields = {
-    description: parseName(description),
-    date: parseName(date),
-    specialist: parseName(specialist),
-    diagnosisCodes: parseDiagnosisCodes(diagnosisCodes)
-  };
-
-  return newBaseEntryFields;
-}; */
-
 const assertNever = (value: never): never => {
   throw new Error(
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
@@ -149,11 +139,12 @@ export const toEntries = (entry : Entry): Entry => {
   switch(entry.type) {
     case "HealthCheck":
       const healthCheckEntryFields: HealthCheckEntry = {
-        id: parseName(entry.id),
+        id: parseSsn(entry.id),
         type: parseHealthCheckType(entry.type),
         description: parseName(entry.description),
         date: parseName(entry.date),
         specialist: parseName(entry.specialist),
+        diagnosisCodes: entry.diagnosisCodes && parseDiagnosisCodes(entry.diagnosisCodes),
         healthCheckRating: parseHealthCheckRating(entry.healthCheckRating)
       };
         return healthCheckEntryFields;                

@@ -6,6 +6,7 @@ Content-Type: application/json
     "date": "2019-10-20",
     "specialist": "MD House",
     "type": "Hospital",
+    "diagnosisCodes": ["S62.5"],
     "description": "Yearly control visit. Cholesterol levels back to normal.",
     "discharge": {
         "date": "2020-01-02",
